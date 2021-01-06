@@ -1,0 +1,5 @@
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/build/CMakeFiles/rebuild_cache.dir
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/build/CMakeFiles/edit_cache.dir
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/build/src/CMakeFiles/rebuild_cache.dir
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/build/src/CMakeFiles/edit_cache.dir
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/build/src/CMakeFiles/main.dir

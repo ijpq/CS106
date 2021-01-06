@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/queen-safety-graphics.cpp
+queen-safety-graphics.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/queen-safety-graphics.h
+glabel.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/glabel.h
+
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/queen-safety-graphics.h
+string
+-
+gwindow.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/gwindow.h
+
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/queen-safety.cpp
+iostream
+-
+string
+-
+console.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/console.h
+strlib.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/strlib.h
+simpio.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/simpio.h
+random.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/random.h
+gevents.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/gevents.h
+gwindow.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/gwindow.h
+grid.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/grid.h
+queen-safety-graphics.h
+/Users/ketang/stanfordcs106x/01-intro-code/01-intro-code/queen-safety/src/queen-safety-graphics.h
+
