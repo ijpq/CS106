@@ -16,3 +16,5 @@
  */
 const int kMaxAge = 12;
 
+typedef struct {
+    FILE *pFile = NULL;

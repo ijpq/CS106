@@ -40,5 +40,7 @@ int main() {
     LifeDisplay display;
     display.setTitle("Game of Life");
     welcome();
+    init();
+    promptFilereader();
     return 0;
 }
