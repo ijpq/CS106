@@ -6,6 +6,11 @@
 
 #include <iostream>  // for cout
 #include <cstdio>
+#include <fstream>
+#include <cstdlib>
+#include <string>
+#include <ctime>
+#include <cctype>
 using namespace std;
 
 #include "console.h" // required of all files that contain the main function
@@ -14,10 +19,9 @@ using namespace std;
 #include "strlib.h"
 #include "grid.h"
 
-#include <string>
-
 #include "life-constants.h"  // for kMaxAge
 #include "life-graphics.h"   // for class LifeDisplay
+#define OCCUPIED 1
 
 /**
  * Function: welcome
@@ -35,19 +39,142 @@ static void welcome() {
     getLine("Hit [enter] to continue....   ");
 }
 
-//TODO generate data in grid.
-void initGrid(Grid<int> *g, int isRandom, string fileName){
-    cout << "init Grid finished" << endl;
+void randomValue(int &val) {
+    srand(time(NULL));
+    val = rand();
+    return;
+}
+
+void fillGrid(Grid<int> *g, const int &x, const int &y, int IsOccupied) {
+    if (!IsOccupied) {
+        g->set(x, y, -1);
+    }
+    else {
+        int value;
+        randomValue(value);
+        value = (value%kMaxAge) + 1;
+        g->set(x, y, value);
+    }
+    return;
+}
+
+void reInitializeGrid(int r, int c, Grid<int> *g) {
+    g->resize(r,c);
+    return;
+}
+
+void generateOneRow(Grid<int> *g,
+                    const string &line,
+                    colonyMeta &MetaInfo,
+                    unsigned int *pNoRow) {
+    if (isdigit(line[0]) != 0 ) {
+        if (MetaInfo.NumOfRows == -1 ) {
+            MetaInfo.NumOfRows = stoi(line);
+        }
+        else if (MetaInfo.NumOfCols == -1){
+            MetaInfo.NumOfCols = stoi(line);
+            reInitializeGrid(MetaInfo.NumOfRows, MetaInfo.NumOfCols, g);
+        }
+        else {
+            cout << "unexpected file format" <<endl;
+            exit(-1);
+        }
+    }
+    else {
+        (*pNoRow)++;
+        int x = *pNoRow;
+        for (size_t ColIdx = 0; ColIdx < line.size(); ColIdx++) {
+            if (line[ColIdx] == 'X') {
+                fillGrid(g, x, ColIdx, OCCUPIED);
+            }
+        }
+    }
+    return;
+}
+
+bool checkIsValidline(const string &s) {
+    bool isvalid = false;
+    for (size_t i =0; i<s.size(); i++) {
+        if (s[i] == ' ') {
+            continue;
+        }
+        else if (s[i] == '#') {
+            break;
+        }
+        else {
+            isvalid = true;
+            break;
+        }
+    }
+    return isvalid;
+}
+
+void initGridRandomly(Grid<int> *g) {
+    int WidthGrid = 0, HeightGrid = 0;
+    randomValue(WidthGrid);
+    WidthGrid = WidthGrid % 21 + 40;
+
+    randomValue(HeightGrid);
+    HeightGrid = HeightGrid % 21 + 40;
+
+    reInitializeGrid(HeightGrid, WidthGrid, g);
+
+    for (int r = 0; r < WidthGrid; r++) {
+        for (int c = 0; c < HeightGrid; c++) {
+            srand(time(NULL));
+            if (rand() % 2 == 0) {
+                // occupied
+                fillGrid(g, r, c, OCCUPIED);
+            }
+            else {
+                // unoccupied.
+                fillGrid(g, r, c, !OCCUPIED);
+            }
+        }
+    }
+
+    return ;
+}
+
+void initGrid(Grid<int> *g, fstream &pFile){
+    if (!pFile) {
+        initGridRandomly(g);
+    }
+    else {
+        colonyMeta MetaInfo = {-1, -1};
+        string line("");
+        unsigned int NoRow = 0;
+        unsigned int *pNoRow = &NoRow;
+        while (true) {
+            std::getline(pFile, line);
+            if (checkIsValidline(line)) {
+                generateOneRow(g, line, MetaInfo, pNoRow);
+            }
+        }
+
+    }
+    return ;
 }
 
 void init(Grid<int> *pGrid) {
-    cout << "You can ..\n";
-    string fileName = getLine("Enter name of colony file ...\n");
-    int isRandom = 0;
-    if (!fileName.empty()) {
-       isRandom = 1; 
+    fstream pFile;
+    while (true) {
+        cout << "You can start your colony with random cells or read from a prepared file.\n";
+        string fileName = getLine("Enter name of colony file (or RETURN to seed randomly):\n");
+        if (fileName.empty()) {
+            break;
+        }
+        pFile.open(fileName);
+        if (pFile) {
+            cout << "open colony file successfully" << endl;
+            break;
+        }
+        else {
+            cout << "colony file not exists or open failed." << endl;
+        }
+
     }
-    initGrid(pGrid, isRandom, fileName);
+    initGrid(pGrid, pFile);
     return;
 }
 
@@ -60,21 +187,20 @@ void choicePrompt() {
     return;
 }
 
-bool makeChoice() {
+bool makeChoice(int *pChoice) {
     choicePrompt();
     string choiceStr("");
-    int acceptChoice = 0;
-    while(true) {
+      while(true) {
         choiceStr = getLine("enter an integer\n");
         if (choiceStr.size() == 1) {
             if (choiceStr[0]-'0' >= 1 && choiceStr[0]-'0' <= 4) {
-                acceptChoice = choiceStr[0]-'0';
+                *pChoice = choiceStr[0]-'0';
                 break;
             }
         } //TODO further detect illegal input
         cout << "Illegal integet format. try again" << endl;
     }
-    if (acceptChoice != 0) {
+    if (*pChoice != 0) {
         // TODO set choice bit.
     }
     return true;
@@ -88,11 +214,15 @@ bool makeChoice() {
 int main() {
     LifeDisplay display;
     display.setTitle("Game of Life");
+
+    Grid<int> G;// TODO this grid.
+    Grid<int> *pGrid =&G;
+
+    int Simulation_choice = -1;
+    int *pChoice = &Simulation_choice;
     welcome();
-    Grid<int> g(3,3,1);// TODO this grid.
-    Grid<int> *pGrid = &g;
     init(pGrid);
-    makeChoice();
+    makeChoice(pChoice);
     
     return 0;
 }

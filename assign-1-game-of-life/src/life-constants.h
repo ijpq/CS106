@@ -16,3 +16,8 @@
  */
 const int kMaxAge = 12;
 
+
+typedef struct {
+    int NumOfRows;
+    int NumOfCols;
+} colonyMeta;
