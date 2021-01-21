@@ -39,41 +39,41 @@ static void welcome() {
     getLine("Hit [enter] to continue....   ");
 }
 
-void randomValue(int &val) {
+void RandomValue(int &val) {
     srand(time(NULL));
     val = rand();
     return;
 }
 
-void fillGrid(Grid<int> *g, const int &x, const int &y, int IsOccupied) {
-    if (!IsOccupied) {
+void FillGrid(Grid<int> *g, const int &x, const int &y, int is_occupied) {
+    if (!is_occupied) {
         g->set(x, y, -1);
     }
     else {
         int value;
-        randomValue(value);
+        RandomValue(value);
         value = (value%kMaxAge) + 1;
         g->set(x, y, value);
     }
     return;
 }
 
-void reInitializeGrid(int r, int c, Grid<int> *g) {
+void ReInitGrid(int r, int c, Grid<int> *g) {
     g->resize(r,c);
     return;
 }
 
-void generateOneRow(Grid<int> *g,
+void GenerateOneRow(Grid<int> *g,
                     const string &line,
-                    colonyMeta &MetaInfo,
-                    unsigned int *pNoRow) {
+                    ColonyMeta &meta_info,
+                    unsigned int *no_row_ptr) {
     if (isdigit(line[0]) != 0 ) {
-        if (MetaInfo.NumOfRows == -1 ) {
-            MetaInfo.NumOfRows = stoi(line);
+        if (meta_info.num_of_rows == -1 ) {
+            meta_info.num_of_rows = stoi(line);
         }
-        else if (MetaInfo.NumOfCols == -1){
-            MetaInfo.NumOfCols = stoi(line);
-            reInitializeGrid(MetaInfo.NumOfRows, MetaInfo.NumOfCols, g);
+        else if (meta_info.num_of_cols == -1){
+            meta_info.num_of_cols = stoi(line);
+            ReInitGrid(meta_info.num_of_rows, meta_info.num_of_cols, g);
         }
         else {
             cout << "unexpected file format" <<endl;
@@ -81,18 +81,18 @@ void generateOneRow(Grid<int> *g,
         }
     }
     else {
-        (*pNoRow)++;
-        int x = *pNoRow;
-        for (size_t ColIdx = 0; ColIdx < line.size(); ColIdx++) {
-            if (line[ColIdx] == 'X') {
-                fillGrid(g, x, ColIdx, OCCUPIED);
+        (*no_row_ptr)++;
+        int x = *no_row_ptr;
+        for (size_t i_col = 0; i_col < line.size(); i_col++) {
+            if (line[i_col] == 'X') {
+                FillGrid(g, x, i_col, OCCUPIED);
             }
         }
     }
     return;
 }
 
-bool checkIsValidline(const string &s) {
+bool CheckValidLinee(const string &s) {
     bool isvalid = false;
     for (size_t i =0; i<s.size(); i++) {
         if (s[i] == ' ') {
@@ -109,26 +109,26 @@ bool checkIsValidline(const string &s) {
     return isvalid;
 }
 
-void initGridRandomly(Grid<int> *g) {
-    int WidthGrid = 0, HeightGrid = 0;
-    randomValue(WidthGrid);
-    WidthGrid = WidthGrid % 21 + 40;
+void InitGridRandomly(Grid<int> *g) {
+    int width_grid = 0, height_grid = 0;
+    RandomValue(width_grid);
+    width_grid = width_grid % 21 + 40;
 
-    randomValue(HeightGrid);
-    HeightGrid = HeightGrid % 21 + 40;
+    RandomValue(height_grid);
+    height_grid = height_grid % 21 + 40;
 
-    reInitializeGrid(HeightGrid, WidthGrid, g);
+    ReInitGrid(height_grid, width_grid, g);
 
-    for (int r = 0; r < WidthGrid; r++) {
-        for (int c = 0; c < HeightGrid; c++) {
+    for (int r = 0; r < width_grid; r++) {
+        for (int c = 0; c < height_grid; c++) {
             srand(time(NULL));
             if (rand() % 2 == 0) {
                 // occupied
-                fillGrid(g, r, c, OCCUPIED);
+                FillGrid(g, r, c, OCCUPIED);
             }
             else {
                 // unoccupied.
-                fillGrid(g, r, c, !OCCUPIED);
+                FillGrid(g, r, c, !OCCUPIED);
             }
         }
     }
@@ -136,19 +136,19 @@ void initGridRandomly(Grid<int> *g) {
     return ;
 }
 
-void initGrid(Grid<int> *g, fstream &pFile){
-    if (!pFile) {
-        initGridRandomly(g);
+void InitGrid(Grid<int> *g, fstream &file_ptr){
+    if (!file_ptr.is_open()) {
+        InitGridRandomly(g);
     }
     else {
-        colonyMeta MetaInfo = {-1, -1};
+        ColonyMeta meta_info = {-1, -1};
         string line("");
         unsigned int NoRow = 0;
         unsigned int *pNoRow = &NoRow;
         while (true) {
-            std::getline(pFile, line);
-            if (checkIsValidline(line)) {
-                generateOneRow(g, line, MetaInfo, pNoRow);
+            std::getline(file_ptr, line);
+            if (CheckValidLinee(line)) {
+                GenerateOneRow(g, line, meta_info, pNoRow);
             }
         }
 
@@ -156,53 +156,55 @@ void initGrid(Grid<int> *g, fstream &pFile){
     return ;
 }
 
-void init(Grid<int> *pGrid) {
-    fstream pFile;
+void Init(Grid<int> *grid_ptr) {
+    fstream file_ptr;
     while (true) {
         cout << "You can start your colony with random cells or read from a prepared file.\n";
         string fileName = getLine("Enter name of colony file (or RETURN to seed randomly):\n");
         if (fileName.empty()) {
+//            cout << "you choose random initialization" << endl;
             break;
+        } else {
+            file_ptr.open(fileName);
+            if (file_ptr) {
+                cout << "open colony file successfully" << endl;
+                break;
+            } else {
+                cout << "file open failed." << endl;
+            }
         }
-        pFile.open(fileName);
-        if (pFile) {
-            cout << "open colony file successfully" << endl;
-            break;
-        }
-        else {
-            cout << "colony file not exists or open failed." << endl;
-        }
-
     }
-    initGrid(pGrid, pFile);
+    InitGrid(grid_ptr, file_ptr);
     return;
 }
 
-void choicePrompt() {
+void ChoicePrompt() {
     cout << "You choose how fast to run the simulation" <<endl;
-    cout << "\t1 = ..." <<endl;
-    cout << "\t2 = ..." <<endl;
-    cout << "\t3 = ..." <<endl;
+    cout << "\t1 = As fast as this chip can go!" <<endl;
+    cout << "\t2 = Not too fast, this is a school zone." <<endl;
+    cout << "\t3 = Nice and slow so I can watch everthing that happens" <<endl;
+    cout << "\t4 = Require enter key be pressed before advancing to next generation" <<endl;
     cout << "Your choice: ";
     return;
 }
 
-bool makeChoice(int *pChoice) {
-    choicePrompt();
-    string choiceStr("");
-      while(true) {
-        choiceStr = getLine("enter an integer\n");
-        if (choiceStr.size() == 1) {
-            if (choiceStr[0]-'0' >= 1 && choiceStr[0]-'0' <= 4) {
-                *pChoice = choiceStr[0]-'0';
+bool MakeChoice(int *choice_ptr) {
+    ChoicePrompt();
+    string choice_str("");
+    while(true) {
+        choice_str = getLine("");
+        if (choice_str.size() == 1) {
+            if (choice_str[0]-'0' >= 1 && choice_str[0]-'0' <= 4) {
+                *choice_ptr = choice_str[0]-'0';
+                cout << *choice_ptr << endl;
                 break;
             }
         } //TODO further detect illegal input
         cout << "Illegal integet format. try again" << endl;
     }
-    if (*pChoice != 0) {
-        // TODO set choice bit.
-    }
+    //if (*choice_ptr != 0) {
+    //    // TODO set choice bit.
+    //}
     return true;
 }
 
@@ -215,14 +217,17 @@ int main() {
     LifeDisplay display;
     display.setTitle("Game of Life");
 
-    Grid<int> G;// TODO this grid.
-    Grid<int> *pGrid =&G;
+    Grid<int> graph;// TODO this grid.
+    Grid<int> *grid_ptr =&graph;
 
-    int Simulation_choice = -1;
-    int *pChoice = &Simulation_choice;
+    int simulation_choice = -1;
+    int *choice_ptr = &simulation_choice;
     welcome();
-    init(pGrid);
-    makeChoice(pChoice);
+    Init(grid_ptr);
+    MakeChoice(choice_ptr);
+
+
+
     
     return 0;
 }
