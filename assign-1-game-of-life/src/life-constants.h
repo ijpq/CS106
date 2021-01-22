@@ -21,3 +21,12 @@ typedef struct {
     int num_of_rows;
     int num_of_cols;
 } ColonyMeta;
+
+
+#define OCCUPIED 1
+#define MAXDEPTH 10000000
+enum DisplaySpeed {
+    kSlow = 2000,
+    kNotTooFast = 1500,
+    kMostFast = 1000,
+};
