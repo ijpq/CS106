@@ -92,7 +92,7 @@ void GenerateOneRow(Grid<int> *g,
     return;
 }
 
-bool CheckValidLinee(const string &s) {
+bool CheckValidLine(const string &s) {
     bool isvalid = false;
     for (size_t i =0; i<s.size(); i++) {
         if (s[i] == ' ') {
@@ -147,7 +147,7 @@ void InitGrid(Grid<int> *g, fstream &file_ptr){
         unsigned int *pNoRow = &NoRow;
         while (true) {
             std::getline(file_ptr, line);
-            if (CheckValidLinee(line)) {
+            if (CheckValidLine(line)) {
                 GenerateOneRow(g, line, meta_info, pNoRow);
             }
         }
