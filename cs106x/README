@@ -1,0 +1,7 @@
+#### tips for generate compile_commands.json for clangd
+
+1. install bear from github source
+2. execute `qmake within a dir contains *.pro`, which would generate a Makefile. the .pro file is a makefile for Qt QMake build system.
+3. execute `bear make`, which would generate compile_commands.json
+4. set your clangd to identify the json file
+

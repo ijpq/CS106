@@ -8,6 +8,7 @@
 
 #ifndef _maze_types_
 #define _maze_types_
+#include <iostream>
 
 /**
  * Defines a positive integer coordinate in 2D space, where we
@@ -19,8 +20,20 @@ struct cell {
 	int col;
 };
 
+inline std::ostream& operator<<(std::ostream& os, const cell& c) {
+        os << "cell at " << c.row << "," << c.col;
+        return os;
+    }
 inline bool operator<(const cell& one, const cell& two) {
     return one.row < two.row || (one.row == two.row && one.col < two.col);
+}
+
+inline bool operator==(const cell& one, const cell& two) {
+    return one.row == two.row && one.col == two.col;
+}
+
+inline bool operator!=(const cell& one, const cell& two) {
+    return one.row != two.row || one.col != two.col;
 }
     
 /**
@@ -32,6 +45,11 @@ inline bool operator<(const cell& one, const cell& two) {
 struct wall {
 	cell one;
 	cell two;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const wall& w) {
+    os << "wall of " << w.one << "," << w.two;
+    return os;
 };
 
 inline bool operator<(const wall& one, const wall& two) {

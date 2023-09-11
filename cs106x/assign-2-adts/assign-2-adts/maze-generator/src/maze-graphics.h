@@ -86,6 +86,15 @@ public:
  */
     void repaint() { GWindow::repaint(); } // inlined for convenience
 
+    void pause(double ms) {GWindow::pause(ms);}
+
+    int getDimension() {
+        return this->dimension;
+    }
+
+    Map<wall, GLine*>& getWallLines() {
+        return this->wallLines;
+    }
 private:
     int dimension;
     double wallLength;

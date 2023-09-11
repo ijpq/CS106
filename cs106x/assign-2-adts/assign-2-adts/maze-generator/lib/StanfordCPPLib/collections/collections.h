@@ -1759,10 +1759,10 @@ bool GenericSet<SetTraits>::operator !=(const GenericSet& set2) const {
     return !equals(set2);
 }
 
-template <typename SetTraits>
-bool operator <(const GenericSet<SetTraits>& set1, const GenericSet<SetTraits>& set2) {
-    return set1.map < set2.map;
-}
+// template <typename SetTraits>
+// bool operator <(const GenericSet<SetTraits>& set1, const GenericSet<SetTraits>& set2) {
+//     return set1.map < set2.map;
+// }
 
 template <typename SetTraits>
 bool operator <=(const GenericSet<SetTraits>& set1, const GenericSet<SetTraits>& set2) {
