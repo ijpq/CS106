@@ -1519,8 +1519,9 @@ public:
     /* of the implementation and should not be of interest to clients.    */
     /**********************************************************************/
 
-private:
+// auto map() const {return map;}
     typename SetTraits::MapType map = SetTraits::construct();  /* Map used to store the elements    */
+private:
     bool removeFlag = false;                                   /* Flag to differentiate += and -=   */
 
 public:
@@ -1759,10 +1760,10 @@ bool GenericSet<SetTraits>::operator !=(const GenericSet& set2) const {
     return !equals(set2);
 }
 
-template <typename SetTraits>
-bool operator <(const GenericSet<SetTraits>& set1, const GenericSet<SetTraits>& set2) {
-    return set1.map < set2.map;
-}
+// template <typename SetTraits>
+// bool operator <(const GenericSet<SetTraits>& set1, const GenericSet<SetTraits>& set2) {
+//     return set1.map < set2.map;
+// }
 
 template <typename SetTraits>
 bool operator <=(const GenericSet<SetTraits>& set1, const GenericSet<SetTraits>& set2) {
