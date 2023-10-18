@@ -1,0 +1,13 @@
+i firstly consider using template to define a struct able to depict both the bracket expansion word, normal word and any other case.
+according to the demo program, but the struct in detail cannot be determined before runtime.
+
+therefore, i assume a struct named `Sentence`. for example, a bracket word with expansion group is a `Sentence`, one normal choice is a Sentence. according to this structure of grammars file, one normal choice can be selected once a time, while requiring a bracket word expansion.
+
+struct Sentence has its own container, which depict the content of words. it also contains a few of childs, which is only meaningful while the sentence is a single bracket word. because a single bracket word should have expansion as followed.
+
+
+but, i don't think this struct is a good opinion, because the expansion, iteration process is bit of awful. you could find out how awfule the function `expand_sentence`/`recursive_expand` write.
+
+
+
+AS FOR NOW, i think this task should define a struct that constructs this tree of grammars. then, try to simulate a expansion of this grammars tree. if every code is well write and easy to sustain, code it. otherwise, reconstruct this grammars tree.
